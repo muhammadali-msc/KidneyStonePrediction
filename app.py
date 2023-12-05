@@ -1,18 +1,42 @@
 import os
 import sys
-import pandas as pd
+import numpy as np
 from src.KidneyStonePrediction.execption import CustomException
-from src.KidneyStonePrediction.components.data_ingestion import DataIngestion
-from src.KidneyStonePrediction.components.data_transformations import DataTransformation
 
-if __name__ == "__main__":
-    try:
+from src.KidneyStonePrediction.piplines.training_pipline import TrainingPipline
+from src.KidneyStonePrediction.piplines.prediction_pipline import PredictionPipline
+from flask import Flask, redirect, render_template, request
+
+app = Flask(__name__, static_url_path='/assets', static_folder='assets')
+
+@app.route("/", methods = ['GET', 'POST'])
+def index():
+    if request.method == 'GET':
+        return render_template('/index.html', result = 0)
+    else:
+
+        gravity = float(request.form['gravity'])
+        ph = float(request.form['ph'])
+        osmo = float(request.form['osmo'])
+        cond = float(request.form['cond'])
+        urea = float(request.form['urea'])
+        calc = float(request.form['calc'])
         
-        data_ingestion = DataIngestion()
-        train_data_path, test_data_path = data_ingestion.initiate_data_ingestion()
+        prediction_pipline = PredictionPipline()
+        predict = prediction_pipline.model_predict(np.array([[gravity,ph,osmo,cond,urea,calc]]))
+        if predict:
+            results = "KidneyStone is present"
+        else:
+            results = "KidneyStone is not present"
 
-        data_transformation = DataTransformation()
-        data_transformation.initiate_data_transormation(train_data_path, test_data_path)
+        
+        return render_template('/index.html',result=results)
+    
+    
+if __name__ == "__main__":
+    
+    app.run(debug = True, host='0.0.0.0')
 
-    except Exception as e:
-        raise CustomException(e, sys)
+    training_pipline = TrainingPipline()
+    model_trainer, accurr, recall = training_pipline.init_training_pipline()
+    

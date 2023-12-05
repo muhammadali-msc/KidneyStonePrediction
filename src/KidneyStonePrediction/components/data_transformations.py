@@ -72,7 +72,9 @@ class DataTransformation:
 
             train_x_norm = preprocessing_obj.fit_transform(train_x_df)
             test_x_norm = preprocessing_obj.fit_transform(test_x_df)
-
+            
+            logging.info(train_x_norm)
+            
             train_arr = np.c_[
                 train_x_norm, train_y_df
             ]

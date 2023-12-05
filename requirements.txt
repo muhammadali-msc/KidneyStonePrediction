@@ -3,5 +3,6 @@ pandas
 scikit_learn
 python-dotenv
 pymysql
-
+tensorflow
+flask
 -e .
