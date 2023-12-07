@@ -88,7 +88,7 @@
      <div class="container">
           <h1 style="color: white;">Predict Result By Entering Following Values:</h1>
           
-          <form action="{{ url_for('index')}}" method="post">
+          <form  method="post">
             <div class="input-box">
               <label for="gravity">Gravity:</label>
               <input type="text"  name="gravity" pattern="[0-9]+(\.[0-9]+)?" title="Enter a positive number" oninput="alignText(this)" required><br>

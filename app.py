@@ -12,7 +12,7 @@ app = Flask(__name__, static_url_path='/assets', static_folder='assets')
 @app.route("/", methods = ['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return render_template('/index.html', result = 0)
+        return render_template('/index.html', result = "")
     else:
 
         gravity = float(request.form['gravity'])
@@ -25,9 +25,9 @@ def index():
         prediction_pipline = PredictionPipline()
         predict = prediction_pipline.model_predict(np.array([[gravity,ph,osmo,cond,urea,calc]]))
         if predict:
-            results = "KidneyStone is present"
+            results = "\nFrom these parameters—Gravity: {}, pH: {}, Osmo: {}, Cond: {}, Urea: {}, and Calc: {}\n the prediction strongly indicates the presence of kidney stones.".format(gravity,ph,osmo,cond,urea,calc)
         else:
-            results = "KidneyStone is not present"
+            results = "\nFrom these parameters—Gravity: {}, pH: {}, Osmo: {}, Cond: {}, Urea: {}, and Calc: {}\n the prediction strongly indicates the absense of kidney stones.".format(gravity,ph,osmo,cond,urea,calc)
 
         
         return render_template('/index.html',result=results)
@@ -35,7 +35,7 @@ def index():
     
 if __name__ == "__main__":
     
-    app.run(host='0.0.0.0', port = 8080)
+    app.run(debug = True, host='0.0.0.0', port = 8080)
 
     training_pipline = TrainingPipline()
 
