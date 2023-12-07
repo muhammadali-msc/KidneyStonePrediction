@@ -41,6 +41,6 @@ if __name__ == "__main__":
 
 
 
-    
+
     model_trainer, accurr, recall = training_pipline.init_training_pipline()
     
