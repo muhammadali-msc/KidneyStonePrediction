@@ -37,8 +37,7 @@ if __name__ == "__main__":
     
     app.run(host='0.0.0.0', port = 8080)
 
-
     training_pipline = TrainingPipline()
-
+    
     model_trainer, accurr, recall = training_pipline.init_training_pipline()
     
