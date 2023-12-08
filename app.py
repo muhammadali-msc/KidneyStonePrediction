@@ -9,37 +9,39 @@ from flask import Flask, redirect, render_template, request, url_for
 
 app = Flask(__name__, static_url_path='/assets', static_folder='assets')
 
-@app.route("/", methods = ['GET', 'POST'])
+@app.route("/", methods = ['GET'])
 def index():
-       
-        results = ""
-        try:
-            if request.method == "POST":
-                gravity = float(request.form['gravity'])
-                ph = float(request.form['ph'])
-                osmo = float(request.form['osmo'])
-                cond = float(request.form['cond'])
-                urea = float(request.form['urea'])
-                calc = float(request.form['calc'])
-                
-                prediction_pipline = PredictionPipline()
-                predict = prediction_pipline.model_predict(np.array([[gravity,ph,osmo,cond,urea,calc]]))
-                
-                if predict:
-                    results = "\nFrom these parameters—Gravity: {}, pH: {}, Osmo: {}, Cond: {}, Urea: {}, and Calc: {}\n the prediction strongly indicates the presence of kidney stones.".format(gravity,ph,osmo,cond,urea,calc)
-                else:
-                    results = "\nFrom these parameters—Gravity: {}, pH: {}, Osmo: {}, Cond: {}, Urea: {}, and Calc: {}\n the prediction strongly indicates the absense of kidney stones.".format(gravity,ph,osmo,cond,urea,calc)
-        except Exception as e:
-             raise CustomException(e,sys)
-                
-        return render_template('/index.html', result = results)
+
+        return render_template('/index.html', result = "")
     
+@app.route("/predict", methods = ['POST'])
+def predict():
+    results = ""
+    gravity = float(request.form['gravity'])
+    ph = float(request.form['ph'])
+    osmo = float(request.form['osmo'])
+    cond = float(request.form['cond'])
+    urea = float(request.form['urea'])
+    calc = float(request.form['calc'])
     
+    prediction_pipline = PredictionPipline()
+    
+    predict = prediction_pipline.model_predict(np.array([[gravity,ph,osmo,cond,urea,calc]]))
+    
+    if predict:
+        results = "\nFrom these parameters—Gravity: {}, pH: {}, Osmo: {}, Cond: {}, Urea: {}, and Calc: {}\n the prediction strongly indicates the presence of kidney stones.".format(gravity,ph,osmo,cond,urea,calc)
+    else:
+        results = "\nFrom these parameters—Gravity: {}, pH: {}, Osmo: {}, Cond: {}, Urea: {}, and Calc: {}\n the prediction strongly indicates the absense of kidney stones.".format(gravity,ph,osmo,cond,urea,calc)
+    
+    return render_template('/index.html', result = results)
+
 if __name__ == "__main__":
     
-    app.run( host='0.0.0.0', port = 8080)
-
     training_pipline = TrainingPipline()
 
     model_trainer, accurr, recall = training_pipline.init_training_pipline()
+
+    app.run(host='0.0.0.0', port = 8080)
+
+    
     

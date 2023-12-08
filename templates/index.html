@@ -84,11 +84,11 @@
   
 
    <!--  footer -->
-   <footer action="{{ url_for('index')}}" class="ds-footer text-center">
+   <footer class="ds-footer text-center">
      <div class="container">
           <h1 style="color: white;">Predict Result By Entering Following Values:</h1>
           
-          <form  method="post">
+          <form  action = "{{url_for('predict')}}" method="post" enctype="multipart/form-data" >
             <div class="input-box">
               <label for="gravity">Gravity:</label>
               <input type="text"  name="gravity" pattern="[0-9]+(\.[0-9]+)?" title="Enter a positive number" oninput="alignText(this)" required><br>
